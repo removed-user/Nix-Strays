@@ -1,4 +1,6 @@
 # Flake module that declares flake.homeManagerModules outputs and how to merge it
+## For an upgrade/improved reuse swap out home-manager specs for 
+### getModule type, so this can be applied to any number of different option-modules
 {
   lib,
   # , self
