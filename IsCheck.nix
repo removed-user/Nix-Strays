@@ -1,4 +1,4 @@
-{
+{lib, ... }:{
 /**
     Get a path as a list if it exists.
     Returns an empty list if the path does not exist.
