@@ -15,7 +15,7 @@ let
   falseConditions = builtins.filter (!p: p.cond) Conditions;
 
 # assuming lib.partition is optimal?
-  result = lib.partition (p: p.cond) allPaths
+  result = lib.partition (p: p.cond) Conditions
 in
   # 3. Extract the results/actions of the qualified paths
   builtins.map (p: p.action) trueConditions
