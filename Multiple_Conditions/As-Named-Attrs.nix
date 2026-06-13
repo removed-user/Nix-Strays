@@ -16,9 +16,11 @@ in
   failedChecks
 
 \**
+```md
 returns this attset, which you can read from - to directly get the value of a given check
 {
   checkNetwork = { cond = false; action = "Retry connection"; };
   checkMemory  = { cond = false; action = "Allocate swap"; };
 }
+```
 **\
