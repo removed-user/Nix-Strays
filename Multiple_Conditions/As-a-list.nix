@@ -1,3 +1,7 @@
+# This has the benefit that checks have a strict ordering. 
+# You can have the action of each be to perform the next
+# Which would give very efficient checking/conditional logic
+
 let
   # 1. Define all available paths as a list of sets
   Conditions = [
