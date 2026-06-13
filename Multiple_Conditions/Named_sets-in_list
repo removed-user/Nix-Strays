@@ -1,0 +1,12 @@
+let
+  conditions = [
+    { name = "checkDiskSpace"; cond = true;  action = "Clean disk"; }
+    { name = "checkNetwork";   cond = false; action = "Retry connection"; } # First False
+    { name = "checkMemory";    cond = false; action = "Allocate swap"; }
+  ];
+
+  # Find the first one where cond is false
+  firstFailed = builtins.findFirst (p: !p.cond) null conditions;
+in
+  # You can now read 'firstFailed.name' or 'firstFailed.action'
+  firstFailed
