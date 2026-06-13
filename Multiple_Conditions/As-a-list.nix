@@ -12,7 +12,7 @@ let
 
   # 2. Filter out paths where the condition evaluates to false
   trueConditions = builtins.filter (p: p.cond) Conditions;
-  falseConditions = builtins.filter (!p: p.cond) Conditions;
+  falseConditions = builtins.filter (p: !p.cond) Conditions;
 
 # assuming lib.partition is optimal?
   result = lib.partition (p: p.cond) Conditions
