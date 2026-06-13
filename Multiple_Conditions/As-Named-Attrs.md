@@ -10,7 +10,7 @@ let
   };
 
   # 2. Filter the attribute set to keep only elements where 'cond' is false
-  # 'builtins.filterAttrs' is available in modern Nix (2.4+)
+
   failedChecks = builtins.filterAttrs (name: value: !value.cond) conditions;
 in
   # 3. Access the actions or names of the remaining paths
