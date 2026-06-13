@@ -8,37 +8,39 @@ let
     else
       0;
 
-  flattenAttrs = prefix: currentDepth: maxDepth: attrs:
+  # baseName: The original package root (e.g., "tinycc")
+  # currentDepth: How many 'prev' layers deep we currently are
+  # maxDepth: The total number of 'prev' layers found for this package
+  flattenAttrs = baseName: currentDepth: maxDepth: attrs:
     lib.concatMapAttrs (name: value:
       let
         isPrev = name == "prev";
         
-        # Calculate depth parameters
+        # Calculate parameters for the next iteration
         nextDepth = if isPrev then currentDepth + 1 else currentDepth;
-        # If this is a new root package, calculate its specific max chain length
-        nextMaxDepth = if prefix == "" && builtins.isAttrs value then findMaxPrevDepth value else maxDepth;
+        
+        # If we are at the top level, discover the max depth for this package chain
+        nextMaxDepth = if baseName == "" && builtins.isAttrs value then 
+          findMaxPrevDepth value 
+        else 
+          maxDepth;
 
-        # Calculate the actual bootstrap stage (e.g., max 4 - current 1 = Stage 3)
+        # Track the name of the tool/file inside the attribute set
+        nextBaseName = 
+          if baseName == "" then name
+          else if isPrev then baseName  # Keep the root name, don't append "-stageX" yet
+          else "${baseName}/${name}";    # For other nested attributes like sub-tools
+
+        # Calculate the chronological bootstrap stage
         stageNum = nextMaxDepth - nextDepth;
-
-        currentKey = 
-          if isPrev then 
-            # If we hit a compiler or tool at this stage level, tag it
-            "${prefix}-stage${toString stageNum}"
-          else if prefix == "" then 
-            name 
-          else 
-            "${prefix}/${name}";
+        
+        # Format the final name cleanly only when we hit a derivation
+        makeFinalKey = if nextDepth == 0 then nextBaseName else "${nextBaseName}-stage${toString stageNum}";
       in
       if lib.isDerivation value then
-        # If the root package itself is a derivation, name it cleanly.
-        # Otherwise, assign it its calculated stage string.
-        let
-          finalKey = if isPrev then currentKey else if currentDepth > 0 then "${prefix}-stage${toString stageNum}" else currentKey;
-        in
-        { "${finalKey}" = value; }
+        { "${makeFinalKey}" = value; }
       else if builtins.isAttrs value then
-        flattenAttrs currentKey nextDepth nextMaxDepth value
+        flattenAttrs nextBaseName nextDepth nextMaxDepth value
       else
         {}
     ) attrs;
