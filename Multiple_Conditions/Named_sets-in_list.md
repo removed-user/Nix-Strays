@@ -1,3 +1,4 @@
+```nix
 let
   conditions = [
     { name = "checkDiskSpace"; cond = true;  action = "Clean disk"; }
@@ -10,3 +11,11 @@ let
 in
   # You can now read 'firstFailed.name' or 'firstFailed.action'
   firstFailed
+```
+
+\**
+# This returns a list of strings: [ "checkNetwork" "checkMemory" ]
+```nix
+builtins.attrNames failedChecks
+```
+\**
