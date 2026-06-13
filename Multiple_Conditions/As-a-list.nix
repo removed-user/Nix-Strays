@@ -1,5 +1,5 @@
 # This has the benefit that checks have a strict ordering. 
-# You can have the action of each be to perform the next
+# You can have the action of each... be to continue/perform the next
 # Which would give very efficient checking/conditional logic
 
 let
@@ -18,4 +18,4 @@ let
   result = lib.partition (p: p.cond) allPaths
 in
   # 3. Extract the results/actions of the qualified paths
-  builtins.map (p: p.action) activePaths
+  builtins.map (p: p.action) trueConditions
