@@ -3,10 +3,16 @@
 
   inputs = {
     flake-parts.url = "github:hercules-ci/flake-parts";
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs-lib.url = "github:nix-community/nixpkgs.lib";
   };
 
-  outputs = inputs @ {flake-parts, ...}:
+  outputs = inputs @ {
+    flake-parts,
+    nixpkgs-lib,
+    ...
+  }: let
+    lib = nixpkgs-lib.lib;
+  in
     flake-parts.lib.mkFlake {inherit inputs;} {
       imports = [
         # To import an internal flake module: ./other.nix
