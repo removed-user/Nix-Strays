@@ -1,21 +1,44 @@
-# This has the benefit that checks have a strict ordering. 
+# This has the benefit that checks have a strict ordering.
 # You can have the action of each... be to continue/perform the next
 # Which would give very efficient checking/conditional logic
+{lib}: let
+  # example Conditions (check type)
+  cond1 = x: builtins.isString x;
+  cond2 = x: builtins.isBool x;
+  cond3 = x: builtins.isAttrs x;
 
-let
-  # 1. Define all available paths as a list of sets
+  # example functions (print string)
+  Action1 = z: "String!";
+  Action2 = z: "Bool!";
+  Action3 = z: "Attrs!";
+
+  # 1. Define all available Code Paths as a list of sets
   Conditions = [
-    { cond = cond1; action = path1Result; }
-    { cond = cond2; action = path2Result; }
-    { cond = cond3; action = path3Result; }
+    {
+      cond = cond1;
+      action = Action1;
+    }
+    {
+      cond = cond2;
+      action = Action2;
+    }
+    {
+      cond = cond3;
+      action = Action3;
+    }
   ];
 
   # 2. Filter out paths where the condition evaluates to false
   trueConditions = builtins.filter (p: p.cond) Conditions;
   falseConditions = builtins.filter (p: !p.cond) Conditions;
 
-# assuming lib.partition is optimal?
-  result = lib.partition (p: p.cond) Conditions
+  # assuming lib.partition is optimal?
+  result = lib.partition (p: p.cond) Conditions;
 in
-  # 3. Extract the results/actions of the qualified paths
-  builtins.map (p: p.action) trueConditions
+  # 3.Get results/take actions on the selected paths
+  {
+    truthyActions = builtins.map (p: p.action) trueConditions;
+    falseyActions = builtins.map (p: p.action) falseConditions;
+    right = result.right;
+    wrong = result.wrong;
+  }
