@@ -15,11 +15,18 @@
   in
     flake-parts.lib.mkFlake {inherit inputs;} {
       imports = [
-        # To import an internal flake module: ./other.nix
-        # To import an external flake module:
-        #   1. Add foo to inputs
-        #   2. Add foo as a parameter to the outputs function
-        #   3. Add here: foo.flakeModule
+        inputs.flake-parts.flakeModules.flakeModules
+        inputs.flake-parts.flakeModules.modules
+        inputs.flake-parts.flakeModules.debug
+        inputs.flake-parts.flakeModules.partitions
+      ];
+
+      disabledModules = [
+        inputs.flake-parts.flakeModules.nixosModules
+        inputs.flake-parts.flakeModules.nixosConfigurations
+        inputs.flake-parts.flakeModules.apps
+        inputs.flake-parts.flakeModules.devShells
+        inputs.flake-parts.flakeModules.formatter
       ];
       systems = ["x86_64-linux"];
       perSystem = {
